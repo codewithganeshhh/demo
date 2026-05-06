@@ -129,16 +129,18 @@ body {
 }
 
 .profile-img {
-  width: 130px;
-  height: 130px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
-  border: 5px solid var(--card-bg);
-  position: absolute;
-  top: 75px;
-  left: 50%;
-  transform: translateX(-50%);
+  border: 6px solid var(--card-bg);
+  position: relative;
+  margin-top: -70px; /* Pulls it up halfway over the header */
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
   object-fit: cover;
   background: white;
+  z-index: 5;
 }
 
 .info-list {
@@ -211,62 +213,49 @@ body {
     color: #fff;
     border-color: rgba(255, 255, 255, 0.15);
 }
-[data-theme="dark"] .form-control:focus {
+
+[data-theme="dark"] .table {
+    color: var(--text-color) !important;
+    --bs-table-bg: transparent !important;
+    --bs-table-border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .table thead th {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-color) !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .table tbody td {
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+}
+
+[data-theme="dark"] .table-hover>tbody>tr:hover>* {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background-color: #1a1c23;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .text-muted {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme="dark"] .badge.bg-light {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .btn-light {
     background-color: rgba(255, 255, 255, 0.1);
     color: #fff;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem rgba(55, 90, 127, 0.25);
-}
-[data-theme="dark"] .form-label {
-    color: #e0e0e0;
-}
-[data-theme="dark"] .table {
-    color: #fff;
-    border-color: rgba(255,255,255,0.1);
-}
-[data-theme="dark"] .table-hover>tbody>tr:hover>* {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.05);
-}
-[data-theme="dark"] td, [data-theme="dark"] th {
-    border-color: rgba(255,255,255,0.1);
-}
-[data-theme="dark"] .modal-content {
-    background-color: #1e1e1e;
-    color: #fff;
-}
-[data-theme="dark"] .text-muted {
-    color: #aaa !important;
-}
-[data-theme="dark"] .btn-close {
-    filter: invert(1) grayscale(100%) brightness(200%);
-}
-[data-theme="dark"] .input-group-text {
-    background-color: transparent;
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.15);
-}
-[data-theme="dark"] .bg-light {
-    background-color: rgba(255,255,255,0.05) !important;
-}
-[data-theme="dark"] .border {
-    border-color: rgba(255,255,255,0.1) !important;
-}
-[data-theme="dark"] .text-body {
-    color: var(--text-color) !important;
-}
-[data-theme="dark"] .text-dark {
-    color: #e0e0e0 !important;
-}
-[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
-    color: var(--text-color) !important;
-}
-[data-theme="dark"] .navbar-brand {
-    color: var(--text-color) !important;
-}
-[data-theme="dark"] .badge.bg-light {
-    background-color: rgba(255,255,255,0.15) !important;
-    color: #fff !important;
+    border: none;
 }
 
 /* Animations */
