@@ -1,0 +1,189 @@
+:root {
+  --bg-color: #f4f7f6;
+  --text-color: #333;
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-border: rgba(255, 255, 255, 0.4);
+  --sidebar-bg: #ffffff;
+  --primary-color: #4e73df;
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  --glass-backdrop: blur(12px);
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f4f7f6;
+  --card-bg: rgba(30, 30, 30, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --sidebar-bg: #1e1e1e;
+  --primary-color: #375a7f;
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --bs-body-color: #f4f7f6;
+  --bs-heading-color: #f4f7f6;
+}
+
+body {
+  background: var(--bg-color);
+  background: linear-gradient(135deg, var(--bg-color) 0%, rgba(78, 115, 223, 0.05) 100%);
+  color: var(--text-color);
+  font-family: 'Inter', sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Glassmorphism utility */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+}
+
+[data-theme="dark"] .glass-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Sidebar styling */
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 260px;
+  background: var(--sidebar-bg);
+  padding-top: 20px;
+  transition: 0.3s;
+  z-index: 1000;
+  box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+}
+
+[data-theme="dark"] .sidebar {
+  box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+}
+
+.sidebar .nav-link {
+  padding: 12px 20px;
+  font-weight: 500;
+  border-radius: 0 25px 25px 0;
+  margin-right: 15px;
+  transition: all 0.2s;
+  opacity: 0.8;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(78, 115, 223, 0.1);
+  color: var(--primary-color) !important;
+  opacity: 1;
+}
+
+.main-content {
+  margin-left: 260px;
+  padding: 30px;
+  transition: 0.3s;
+}
+
+/* Responsive Sidebar */
+@media (max-width: 992px) {
+  .sidebar {
+    left: -260px;
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* QR Container */
+.qr-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+.qr-container img {
+  margin: 0 auto;
+}
+
+/* Dark Mode Overrides for Bootstrap Components */
+[data-theme="dark"] .form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(55, 90, 127, 0.25);
+}
+[data-theme="dark"] .form-label {
+    color: #e0e0e0;
+}
+[data-theme="dark"] .table {
+    color: #fff;
+    border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .table-hover>tbody>tr:hover>* {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+[data-theme="dark"] td, [data-theme="dark"] th {
+    border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .modal-content {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+[data-theme="dark"] .text-muted {
+    color: #aaa !important;
+}
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+[data-theme="dark"] .input-group-text {
+    background-color: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .bg-light {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+[data-theme="dark"] .border {
+    border-color: rgba(255,255,255,0.1) !important;
+}
+[data-theme="dark"] .text-body {
+    color: var(--text-color) !important;
+}
+[data-theme="dark"] .text-dark {
+    color: #e0e0e0 !important;
+}
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+    color: var(--text-color) !important;
+}
+[data-theme="dark"] .navbar-brand {
+    color: var(--text-color) !important;
+}
+[data-theme="dark"] .badge.bg-light {
+    background-color: rgba(255,255,255,0.15) !important;
+    color: #fff !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+tbody tr {
+  animation: fadeIn 0.4s ease-out forwards;
+}
