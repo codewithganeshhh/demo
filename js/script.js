@@ -3,17 +3,23 @@ let customers = JSON.parse(localStorage.getItem('qr_customers')) || [];
 let qrcodeInstance = null;
 let currentQRId = null;
 
+// --- CLOUDINARY CONFIGURATION ---
+// Replace these with your own details from Cloudinary dashboard
+const CLOUDINARY_CLOUD_NAME = 'dhvcp6tiy';
+const CLOUDINARY_UPLOAD_PRESET = 'demo qr';
+// --------------------------------
+
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    
+
     // Determine context based on DOM elements
     if (document.getElementById('customer-table-body')) {
         // Admin Dashboard
         renderTable();
         updateStats();
         setupImageUpload();
-        
+
         // Reset modal on close
         const customerModalEl = document.getElementById('customerModal');
         if (customerModalEl) {
@@ -60,24 +66,60 @@ function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('active');
 }
 
-// Image Upload Handling (Convert to Base64)
+// Image Upload Handling (Convert to Base64 AND Upload to Cloudinary)
 function setupImageUpload() {
     const fileInput = document.getElementById('custImageFile');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const uploadSuccess = document.getElementById('uploadSuccess');
+    const saveBtn = document.querySelector('[onclick="saveCustomer()"]');
+
     if (fileInput) {
-        fileInput.addEventListener('change', function(e) {
+        fileInput.addEventListener('change', async function (e) {
             const file = e.target.files[0];
-            if (file) {
-                // Check file size (limit to ~2MB to save localStorage space)
-                if(file.size > 2 * 1024 * 1024) {
-                    showToast('Image is too large. Please select an image under 2MB.', 'danger');
-                    this.value = '';
-                    return;
+            if (!file) return;
+
+            // 1. Local Preview (Base64)
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                document.getElementById('custImageBase64').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            // 2. Cloudinary Upload (for QR/Mobile)
+            if (CLOUDINARY_CLOUD_NAME === 'YOUR_CLOUD_NAME') {
+                console.warn("Cloudinary not configured. Image will only show locally.");
+                return;
+            }
+
+            try {
+                uploadStatus.style.display = 'block';
+                uploadSuccess.style.display = 'none';
+                saveBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.secure_url) {
+                    document.getElementById('custImageCloudinaryUrl').value = data.secure_url;
+                    uploadStatus.style.display = 'none';
+                    uploadSuccess.style.display = 'block';
+                } else {
+                    throw new Error("Upload failed");
                 }
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('custImageBase64').value = event.target.result;
-                };
-                reader.readAsDataURL(file);
+            } catch (err) {
+                console.error("Cloudinary Error:", err);
+                showToast('Cloudinary upload failed. Check your config!', 'danger');
+                uploadStatus.style.display = 'none';
+            } finally {
+                saveBtn.disabled = false;
             }
         });
     }
@@ -97,6 +139,7 @@ function saveCustomer() {
     const email = document.getElementById('custEmail').value.trim();
     const address = document.getElementById('custAddress').value.trim();
     const notes = document.getElementById('custNotes').value.trim();
+    const cloudinaryUrl = document.getElementById('custImageCloudinaryUrl').value;
     const imageBase64 = document.getElementById('custImageBase64').value;
 
     if (!name || !mobile) {
@@ -112,8 +155,9 @@ function saveCustomer() {
         email,
         address,
         notes,
-        // Fallback to UI Avatars if no image uploaded
-        image: imageBase64 || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200`,
+        cloudinaryUrl,
+        // Fallback hierarchy: 1. Cloudinary, 2. Base64, 3. UI Avatar
+        image: cloudinaryUrl || imageBase64 || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200`,
         timestamp: new Date().toISOString()
     };
 
@@ -136,10 +180,10 @@ function saveCustomer() {
         showToast('Storage full! Please clear some data or reduce image sizes.', 'danger');
         return;
     }
-    
+
     // Reset and close modal
     bootstrap.Modal.getInstance(document.getElementById('customerModal')).hide();
-    
+
     renderTable();
     updateStats();
 }
@@ -150,20 +194,20 @@ function renderTable() {
     if (!tbody) return;
 
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
-    
+
     tbody.innerHTML = '';
-    
+
     // Sort by newest first
     const sortedCustomers = [...customers].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-    const filteredCustomers = sortedCustomers.filter(c => 
-        c.name.toLowerCase().includes(searchTerm) || 
+    const filteredCustomers = sortedCustomers.filter(c =>
+        c.name.toLowerCase().includes(searchTerm) ||
         c.id.toLowerCase().includes(searchTerm) ||
         c.company.toLowerCase().includes(searchTerm) ||
         c.mobile.includes(searchTerm)
     );
 
-    if(filteredCustomers.length === 0) {
+    if (filteredCustomers.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted">No customers found.</td></tr>`;
         return;
     }
@@ -212,7 +256,12 @@ function editCustomer(id) {
     document.getElementById('custEmail').value = c.email;
     document.getElementById('custAddress').value = c.address;
     document.getElementById('custNotes').value = c.notes;
-    document.getElementById('custImageBase64').value = c.image.startsWith('data:image') ? c.image : '';
+    document.getElementById('custImageCloudinaryUrl').value = c.cloudinaryUrl || '';
+    document.getElementById('custImageBase64').value = c.image && c.image.startsWith('data:image') ? c.image : '';
+
+    // Reset status indicators
+    document.getElementById('uploadStatus').style.display = 'none';
+    document.getElementById('uploadSuccess').style.display = 'none';
 
     document.getElementById('modalTitle').innerText = 'Edit Customer Profile';
     new bootstrap.Modal(document.getElementById('customerModal')).show();
@@ -236,10 +285,10 @@ function showQR(id) {
     if (!customer) return;
 
     const qrContainer = document.getElementById('qrcode-display');
-    qrContainer.innerHTML = ''; 
-    
+    qrContainer.innerHTML = '';
+
     const currentUrl = window.location.href.split('/').slice(0, -1).join('/');
-    
+
     // To make this work on mobile (which doesn't have the data in its localStorage),
     // we encode the customer details directly into the URL.
     // Note: We exclude large base64 images to keep the QR code scan-friendly.
@@ -252,9 +301,11 @@ function showQR(id) {
         a: customer.address,
         nt: customer.notes
     };
-    
-    // Only include the image if it's a URL (not a massive base64 string)
-    if (customer.image && !customer.image.startsWith('data:image')) {
+
+    // Only include the image if it's a hosted URL
+    if (customer.cloudinaryUrl) {
+        compactData.img = customer.cloudinaryUrl;
+    } else if (customer.image && !customer.image.startsWith('data:image')) {
         compactData.img = customer.image;
     }
 
@@ -265,9 +316,9 @@ function showQR(id) {
         text: profileUrl,
         width: 240, // Slightly larger for more data
         height: 240,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.M // Medium error correction to fit data
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M // Medium error correction to fit data
     });
 
     document.getElementById('qrProfileLink').href = profileUrl;
@@ -307,7 +358,7 @@ function printQR() {
 
 // Data Import / Export (JSON)
 function exportData() {
-    if(customers.length === 0) {
+    if (customers.length === 0) {
         showToast('No data to export!', 'warning text-dark');
         return;
     }
@@ -323,7 +374,7 @@ function importData(event) {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             try {
                 const imported = JSON.parse(e.target.result);
                 if (Array.isArray(imported)) {
@@ -380,12 +431,12 @@ function loadProfileData() {
 
     if (customer) {
         document.getElementById('profileCard').style.display = 'block';
-        
+
         document.title = `${customer.name} - Profile Card`;
         document.getElementById('p-img').src = customer.image;
         document.getElementById('p-name').innerText = customer.name;
-        
-        if(customer.company) {
+
+        if (customer.company) {
             document.getElementById('p-company').innerText = customer.company;
         } else {
             document.getElementById('p-company').style.display = 'none';
@@ -395,7 +446,7 @@ function loadProfileData() {
         document.getElementById('p-mobile').innerText = customer.mobile;
         document.getElementById('link-mobile').href = `tel:${customer.mobile}`;
 
-        if(customer.email) {
+        if (customer.email) {
             document.getElementById('p-email').innerText = customer.email;
             document.getElementById('link-email').href = `mailto:${customer.email}`;
         } else {
@@ -405,7 +456,7 @@ function loadProfileData() {
 
         document.getElementById('p-address').innerText = customer.address || 'Not provided';
 
-        if(customer.notes) {
+        if (customer.notes) {
             document.getElementById('notes-container').style.display = 'block';
             document.getElementById('p-notes').innerText = customer.notes;
         }
@@ -433,15 +484,15 @@ function saveContact() {
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     const customer = customers.find(c => c.id === id);
-    if(!customer) return;
+    if (!customer) return;
 
     // Generate vCard format
     let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:;${customer.name};;;\nFN:${customer.name}\n`;
-    if(customer.company) vcard += `ORG:${customer.company}\n`;
-    if(customer.mobile) vcard += `TEL;TYPE=CELL:${customer.mobile}\n`;
-    if(customer.email) vcard += `EMAIL:${customer.email}\n`;
-    if(customer.address) vcard += `ADR;TYPE=WORK,PREF:;;${customer.address.replace(/\n/g, ' ')};;;;\n`;
-    if(customer.notes) vcard += `NOTE:${customer.notes.replace(/\n/g, ' ')}\n`;
+    if (customer.company) vcard += `ORG:${customer.company}\n`;
+    if (customer.mobile) vcard += `TEL;TYPE=CELL:${customer.mobile}\n`;
+    if (customer.email) vcard += `EMAIL:${customer.email}\n`;
+    if (customer.address) vcard += `ADR;TYPE=WORK,PREF:;;${customer.address.replace(/\n/g, ' ')};;;;\n`;
+    if (customer.notes) vcard += `NOTE:${customer.notes.replace(/\n/g, ' ')}\n`;
     vcard += `END:VCARD`;
 
     const blob = new Blob([vcard], { type: "text/vcard" });
@@ -459,23 +510,23 @@ function saveContact() {
 function showToast(message, bgClass = 'success') {
     const toastEl = document.getElementById('liveToast');
     if (!toastEl) return;
-    
+
     // bg-success, bg-danger, bg-warning etc
     document.getElementById('toastMessage').innerText = message;
-    
+
     // Reset classes
     toastEl.className = `toast align-items-center border-0 shadow glass-card text-bg-${bgClass.split(' ')[0]}`;
-    
+
     // If it's warning, make text dark for readability
-    if(bgClass.includes('text-dark')) {
+    if (bgClass.includes('text-dark')) {
         toastEl.classList.add('text-dark');
         const btnClose = toastEl.querySelector('.btn-close');
-        if(btnClose) btnClose.classList.remove('btn-close-white');
+        if (btnClose) btnClose.classList.remove('btn-close-white');
     } else {
         const btnClose = toastEl.querySelector('.btn-close');
-        if(btnClose) btnClose.classList.add('btn-close-white');
+        if (btnClose) btnClose.classList.add('btn-close-white');
     }
-    
+
     const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
     toast.show();
 }
