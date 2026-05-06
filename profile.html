@@ -47,13 +47,14 @@
         /* ─── Blue Header with image INSIDE ─── */
         .profile-header {
             background: linear-gradient(135deg, #6366f1, #a855f7);
-            padding: 60px 20px 28px 20px;   /* big top = image never clips */
+            padding: 55px 24px 35px 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
             text-align: center;
+            min-height: 280px; /* ensures enough space for image + name + badge */
         }
 
         .profile-header .theme-btn {
@@ -106,14 +107,16 @@
         }
 
         .profile-header .company-badge {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.25);
             color: #fff;
-            border: 1px solid rgba(255,255,255,0.35);
+            border: 1.5px solid rgba(255, 255, 255, 0.6);
             border-radius: 20px;
-            padding: 4px 16px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
+            padding: 5px 18px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-top: 6px;
+            display: inline-block;
         }
 
         /* ─── Body ─── */
