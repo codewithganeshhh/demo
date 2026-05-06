@@ -7,7 +7,8 @@
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body {
@@ -97,39 +98,39 @@
 <body>
 
     <!-- Main Profile Card -->
-    <div class="glass-card profile-card p-4 text-center" id="profileCard" style="display: none;">
-        <div class="profile-header">
-            <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-3 shadow-sm rounded-circle" style="z-index: 10; width: 35px; height: 35px;" id="theme-toggle"><i class="bi bi-moon"></i></button>
+    <div class="glass-card profile-card p-4 text-center animate__animated animate__zoomIn" id="profileCard" style="display: none; border-radius: 32px;">
+        <div class="profile-header shadow-sm" style="border-radius: 24px 24px 0 0;">
+            <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-3 shadow-sm rounded-circle" style="z-index: 10; width: 40px; height: 40px;" id="theme-toggle"><i class="bi bi-moon-fill"></i></button>
         </div>
-        <img src="" alt="Profile" class="profile-img" id="p-img">
+        <img src="" alt="Profile" class="profile-img border-0 shadow-lg animate__animated animate__fadeInUp animate__delay-1s" id="p-img" style="top: 60px; width: 140px; height: 140px;">
         
-        <div style="margin-top: 50px;">
-            <h3 class="mb-1 fw-bold" id="p-name">Loading...</h3>
-            <p class="text-muted mb-4 fs-5" id="p-company"></p>
+        <div style="margin-top: 60px;">
+            <h2 class="mb-1 fw-bold tracking-tight" id="p-name">Loading...</h2>
+            <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4 fw-bold" id="p-company"></div>
             
-            <div class="info-list mt-4">
+            <div class="info-list mt-2 px-1">
                 <a href="#" class="text-decoration-none text-body" id="link-mobile">
-                    <div class="info-item">
-                        <div class="info-icon"><i class="bi bi-telephone-fill"></i></div>
+                    <div class="info-item border border-white border-opacity-10">
+                        <div class="info-icon shadow-sm"><i class="bi bi-telephone-outbound"></i></div>
                         <div class="info-content">
-                            <p>Mobile</p>
+                            <p>Direct Call</p>
                             <h6 id="p-mobile">...</h6>
                         </div>
                     </div>
                 </a>
                 
                 <a href="#" class="text-decoration-none text-body" id="link-email">
-                    <div class="info-item">
-                        <div class="info-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div class="info-item border border-white border-opacity-10">
+                        <div class="info-icon shadow-sm"><i class="bi bi-send"></i></div>
                         <div class="info-content">
-                            <p>Email</p>
+                            <p>Send Email</p>
                             <h6 id="p-email">...</h6>
                         </div>
                     </div>
                 </a>
 
-                <div class="info-item">
-                    <div class="info-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                <div class="info-item border border-white border-opacity-10">
+                    <div class="info-icon shadow-sm"><i class="bi bi-pin-map"></i></div>
                     <div class="info-content">
                         <p>Address</p>
                         <h6 id="p-address">...</h6>
@@ -137,14 +138,17 @@
                 </div>
             </div>
 
-            <div class="mt-4 text-start bg-light p-3 rounded-3 border" id="notes-container" style="display: none;">
-                <h6 class="fw-bold mb-2 text-primary"><i class="bi bi-info-circle me-1"></i> About</h6>
-                <p id="p-notes" class="text-muted mb-0" style="font-size: 0.95rem;">...</p>
+            <div class="mt-4 text-start bg-light p-4 rounded-4 border border-white border-opacity-20 shadow-sm" id="notes-container" style="display: none;">
+                <h6 class="fw-bold mb-2 text-primary d-flex align-items-center">
+                    <span class="p-1 bg-primary bg-opacity-10 rounded me-2"><i class="bi bi-chat-left-text"></i></span>
+                    About Me
+                </h6>
+                <p id="p-notes" class="text-muted mb-0 lh-base" style="font-size: 0.95rem;">...</p>
             </div>
 
-            <div class="d-flex justify-content-center mt-4 gap-2">
-                <button class="btn btn-primary w-50 rounded-pill py-2 fw-semibold shadow-sm" onclick="shareProfile()"><i class="bi bi-share me-1"></i> Share</button>
-                <button class="btn btn-outline-primary w-50 rounded-pill py-2 fw-semibold" onclick="saveContact()"><i class="bi bi-person-lines-fill me-1"></i> Save</button>
+            <div class="d-flex justify-content-center mt-5 gap-3">
+                <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow animate__animated animate__pulse animate__infinite" onclick="shareProfile()"><i class="bi bi-share-fill me-2"></i>Share Link</button>
+                <button class="btn btn-outline-primary w-100 rounded-pill py-3 fw-bold" onclick="saveContact()"><i class="bi bi-person-check-fill me-2"></i>Save VCF</button>
             </div>
         </div>
     </div>
