@@ -117,7 +117,7 @@ body {
 
 .profile-card {
   max-width: 450px;
-  margin: 40px auto;
+  margin: 80px auto 40px auto;
   overflow: hidden;
   position: relative;
 }
@@ -128,19 +128,27 @@ body {
   margin: -24px -24px 0 -24px;
 }
 
+.profile-img-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: -75px;
+  position: relative;
+  z-index: 5;
+}
+
 .profile-img {
-  width: 140px;
-  height: 140px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
   border: 6px solid var(--card-bg);
-  position: relative;
-  margin-top: -70px; /* Pulls it up halfway over the header */
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
   object-fit: cover;
   background: white;
-  z-index: 5;
+  margin: 0 !important;
+}
+
+.profile-body {
+  margin-top: 15px;
 }
 
 .info-list {
