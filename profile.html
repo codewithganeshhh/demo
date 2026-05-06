@@ -4,176 +4,362 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Profile</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-color);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99,102,241,0.12) 0px, transparent 60%),
+                radial-gradient(at 100% 100%, rgba(236,72,153,0.12) 0px, transparent 60%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            min-height: 100vh;
         }
+
+        /* ─── Card Shell ─── */
         .profile-card {
             width: 100%;
-            max-width: 420px;
-            position: relative;
+            max-width: 400px;
+            border-radius: 28px;
             overflow: hidden;
-            border-radius: 20px;
-            box-shadow: var(--glass-shadow);
-        }
-        .profile-header {
-            height: 140px;
-            background: linear-gradient(135deg, var(--primary-color), #8e44ad);
-            margin: -30px -30px 50px -30px;
-            border-radius: 20px 20px 0 0;
-            position: relative;
-        }
-        .profile-img {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid var(--card-bg);
             background: var(--card-bg);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+            animation: fadeUp 0.5s ease forwards;
         }
-        .info-item {
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Blue Header with image INSIDE ─── */
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            padding: 30px 20px 60px 20px;   /* extra bottom = image space */
             display: flex;
+            flex-direction: column;
             align-items: center;
-            margin-bottom: 12px;
-            text-align: left;
-            padding: 12px 15px;
-            background: rgba(0,0,0,0.03);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            justify-content: center;
+            position: relative;
+            text-align: center;
         }
-        .info-item:hover {
-            transform: translateX(5px);
-            background: rgba(0,0,0,0.05);
-        }
-        [data-theme="dark"] .info-item {
-            background: rgba(255,255,255,0.05);
-        }
-        [data-theme="dark"] .info-item:hover {
-            background: rgba(255,255,255,0.08);
-        }
-        .info-icon {
-            width: 45px;
-            height: 45px;
+
+        .profile-header .theme-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: rgba(78, 115, 223, 0.1);
-            color: var(--primary-color);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 15px;
-            font-size: 1.3rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .profile-header .theme-btn:hover {
+            background: rgba(255,255,255,0.35);
+        }
+
+        /* ── Image sits inside the blue area ── */
+        .profile-header .p-img-wrap {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 5px solid rgba(255,255,255,0.5);
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            margin-bottom: 14px;
             flex-shrink: 0;
         }
-        .info-content p {
-            margin-bottom: 0;
-            font-size: 0.85rem;
-            color: var(--text-color);
-            opacity: 0.7;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+
+        .profile-header .p-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
-        .info-content h6 {
-            margin-bottom: 0;
+
+        .profile-header h2 {
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.35rem;
+            margin: 0 0 6px 0;
+        }
+
+        .profile-header .company-badge {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 20px;
+            padding: 4px 16px;
+            font-size: 0.82rem;
             font-weight: 600;
-            font-size: 1rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* ─── Body ─── */
+        .profile-body {
+            padding: 24px 20px 28px;
+        }
+
+        /* ─── Info Rows ─── */
+        .info-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: rgba(99,102,241,0.05);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s;
+            border: 1px solid rgba(99,102,241,0.08);
+        }
+
+        .info-row:hover {
+            background: rgba(99,102,241,0.1);
+            transform: translateX(4px);
+            color: inherit;
+        }
+
+        .info-row .icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .info-row .info-text p {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.5;
+            margin: 0;
+        }
+
+        .info-row .info-text h6 {
+            font-size: 0.97rem;
+            font-weight: 600;
+            margin: 2px 0 0;
             word-break: break-word;
+        }
+
+        /* ─── Notes ─── */
+        .notes-box {
+            background: rgba(99,102,241,0.05);
+            border: 1px solid rgba(99,102,241,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        .notes-box .notes-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #6366f1;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .notes-box p {
+            font-size: 0.93rem;
+            opacity: 0.75;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* ─── Action Buttons ─── */
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-row .btn {
+            flex: 1;
+            padding: 13px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.25s;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            border: none;
+            box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(99,102,241,0.45);
+            color: white;
+        }
+
+        .btn-outline-gradient {
+            background: transparent;
+            border: 2px solid #6366f1;
+            color: #6366f1;
+        }
+
+        .btn-outline-gradient:hover {
+            background: rgba(99,102,241,0.08);
+            transform: translateY(-2px);
+            color: #6366f1;
+        }
+
+        /* ─── Dark mode tweaks ─── */
+        [data-theme="dark"] .info-row {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(255,255,255,0.07);
+        }
+
+        [data-theme="dark"] .info-row:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        [data-theme="dark"] .notes-box {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(255,255,255,0.07);
+        }
+
+        [data-theme="dark"] .btn-outline-gradient {
+            border-color: #818cf8;
+            color: #818cf8;
+        }
+
+        /* ─── Error Card ─── */
+        .error-card {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 28px;
+            padding: 50px 30px;
+            text-align: center;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.12);
         }
     </style>
 </head>
 <body>
 
-    <!-- Main Profile Card -->
-    <div class="glass-card profile-card animate__animated animate__fadeInUp" id="profileCard" style="display: none;">
-        <!-- Header Gradient -->
+    <!-- ═══════════════════════════════════════
+         Profile Card
+    ════════════════════════════════════════ -->
+    <div class="profile-card" id="profileCard" style="display:none;">
+
+        <!-- Blue Header — image lives here -->
         <div class="profile-header">
-            <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-3 shadow-sm rounded-circle" id="theme-toggle">
+            <!-- Theme toggle -->
+            <button class="theme-btn" id="theme-toggle" title="Toggle dark mode">
                 <i class="bi bi-moon-fill"></i>
             </button>
-        </div>
 
-        <!-- Centered Image -->
-        <div class="profile-img-wrapper">
-            <img src="" alt="Profile" class="profile-img shadow" id="p-img">
-        </div>
-        
-        <!-- Profile Details -->
-        <div class="profile-info px-4">
-            <h2 class="fw-bold mb-1" id="p-name">Loading...</h2>
-            <div class="mb-4">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill" id="p-company"></span>
+            <!-- Profile photo — INSIDE blue area -->
+            <div class="p-img-wrap">
+                <img src="" alt="Profile Photo" id="p-img">
             </div>
-            
-            <div class="info-list mt-2 px-1">
-                <a href="#" class="text-decoration-none text-body" id="link-mobile">
-                    <div class="info-item border border-white border-opacity-10">
-                        <div class="info-icon shadow-sm"><i class="bi bi-telephone-outbound"></i></div>
-                        <div class="info-content">
-                            <p>Direct Call</p>
-                            <h6 id="p-mobile">...</h6>
-                        </div>
-                    </div>
-                </a>
-                
-                <a href="#" class="text-decoration-none text-body" id="link-email">
-                    <div class="info-item border border-white border-opacity-10">
-                        <div class="info-icon shadow-sm"><i class="bi bi-send"></i></div>
-                        <div class="info-content">
-                            <p>Send Email</p>
-                            <h6 id="p-email">...</h6>
-                        </div>
-                    </div>
-                </a>
 
-                <div class="info-item border border-white border-opacity-10">
-                    <div class="info-icon shadow-sm"><i class="bi bi-pin-map"></i></div>
-                    <div class="info-content">
-                        <p>Address</p>
-                        <h6 id="p-address">...</h6>
-                    </div>
+            <!-- Name + Company inside header -->
+            <h2 id="p-name">—</h2>
+            <span class="company-badge" id="p-company" style="display:none;"></span>
+        </div>
+
+        <!-- White / glass body -->
+        <div class="profile-body">
+
+            <!-- Phone -->
+            <a href="#" class="info-row" id="link-mobile">
+                <div class="icon-wrap"><i class="bi bi-telephone-fill"></i></div>
+                <div class="info-text">
+                    <p>Direct Call</p>
+                    <h6 id="p-mobile">—</h6>
+                </div>
+            </a>
+
+            <!-- Email -->
+            <a href="#" class="info-row" id="link-email">
+                <div class="icon-wrap"><i class="bi bi-envelope-fill"></i></div>
+                <div class="info-text">
+                    <p>Email Address</p>
+                    <h6 id="p-email">—</h6>
+                </div>
+            </a>
+
+            <!-- Address -->
+            <div class="info-row">
+                <div class="icon-wrap"><i class="bi bi-geo-alt-fill"></i></div>
+                <div class="info-text">
+                    <p>Location</p>
+                    <h6 id="p-address">—</h6>
                 </div>
             </div>
 
-            <div class="mt-4 text-start bg-light p-4 rounded-4 border border-white border-opacity-20 shadow-sm" id="notes-container" style="display: none;">
-                <h6 class="fw-bold mb-2 text-primary d-flex align-items-center">
-                    <span class="p-1 bg-primary bg-opacity-10 rounded me-2"><i class="bi bi-chat-left-text"></i></span>
-                    About Me
-                </h6>
-                <p id="p-notes" class="text-muted mb-0 lh-base" style="font-size: 0.95rem;">...</p>
+            <!-- Notes -->
+            <div class="notes-box" id="notes-container" style="display:none;">
+                <div class="notes-title">
+                    <i class="bi bi-chat-left-quote-fill"></i> About Me
+                </div>
+                <p id="p-notes">—</p>
             </div>
 
-            <div class="d-flex justify-content-center mt-5 gap-3">
-                <button class="btn btn-primary w-100 rounded-pill py-3 fw-bold shadow animate__animated animate__pulse animate__infinite" onclick="shareProfile()"><i class="bi bi-share-fill me-2"></i>Share Link</button>
-                <button class="btn btn-outline-primary w-100 rounded-pill py-3 fw-bold" onclick="saveContact()"><i class="bi bi-person-check-fill me-2"></i>Save VCF</button>
+            <!-- Action buttons -->
+            <div class="action-row">
+                <button class="btn btn-gradient" onclick="shareProfile()">
+                    <i class="bi bi-share-fill me-2"></i>Share
+                </button>
+                <button class="btn btn-outline-gradient" onclick="saveContact()">
+                    <i class="bi bi-person-check-fill me-2"></i>Save VCF
+                </button>
             </div>
-        </div>
+
+        </div><!-- /profile-body -->
+    </div><!-- /profile-card -->
+
+    <!-- ═══════════════════════════════════════
+         Error state
+    ════════════════════════════════════════ -->
+    <div class="error-card" id="errorCard" style="display:none;">
+        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:3.5rem;"></i>
+        <h4 class="fw-bold mt-4">Profile Not Found</h4>
+        <p class="text-muted mt-2">This digital business card does not exist or has been removed.</p>
+        <button class="btn btn-gradient mt-3 px-4" onclick="window.history.back()">Go Back</button>
     </div>
 
-    <!-- Error State -->
-    <div class="glass-card p-5 text-center" id="errorCard" style="display: none; max-width: 400px; width: 100%;">
-        <div class="mb-4">
-            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
-        </div>
-        <h4 class="fw-bold">Profile Not Found</h4>
-        <p class="text-muted mb-4">The requested digital business card does not exist or has been removed by the administrator.</p>
-        <button class="btn btn-primary" onclick="window.history.back()">Go Back</button>
-    </div>
-
-    <!-- Bootstrap & JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/script.js"></script>
 </body>

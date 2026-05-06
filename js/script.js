@@ -432,20 +432,23 @@ function loadProfileData() {
     if (customer) {
         document.getElementById('profileCard').style.display = 'block';
 
-        document.title = `${customer.name} - Profile Card`;
+        document.title = `${customer.name} — Digital Card`;
         document.getElementById('p-img').src = customer.image;
         document.getElementById('p-name').innerText = customer.name;
 
+        const companyEl = document.getElementById('p-company');
         if (customer.company) {
-            document.getElementById('p-company').innerText = customer.company;
+            companyEl.innerText = customer.company;
+            companyEl.style.display = 'inline-block';
         } else {
-            document.getElementById('p-company').style.display = 'none';
+            companyEl.style.display = 'none';
         }
 
-        // Contact links
+        // Phone
         document.getElementById('p-mobile').innerText = customer.mobile;
         document.getElementById('link-mobile').href = `tel:${customer.mobile}`;
 
+        // Email
         if (customer.email) {
             document.getElementById('p-email').innerText = customer.email;
             document.getElementById('link-email').href = `mailto:${customer.email}`;
@@ -454,14 +457,15 @@ function loadProfileData() {
             document.getElementById('link-email').style.pointerEvents = 'none';
         }
 
+        // Address
         document.getElementById('p-address').innerText = customer.address || 'Not provided';
 
+        // Notes
         if (customer.notes) {
             document.getElementById('notes-container').style.display = 'block';
             document.getElementById('p-notes').innerText = customer.notes;
         }
     } else {
-        // Show error card
         document.getElementById('errorCard').style.display = 'block';
     }
 }
