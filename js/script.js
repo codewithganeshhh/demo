@@ -232,20 +232,42 @@ function deleteCustomer(id) {
 // QR Code Functionality
 function showQR(id) {
     currentQRId = id;
+    const customer = customers.find(c => c.id === id);
+    if (!customer) return;
+
     const qrContainer = document.getElementById('qrcode-display');
-    qrContainer.innerHTML = ''; // clear existing canvas/img
+    qrContainer.innerHTML = ''; 
     
-    // Generate absolute URL for profile page
     const currentUrl = window.location.href.split('/').slice(0, -1).join('/');
-    const profileUrl = `${currentUrl}/profile.html?id=${id}`;
+    
+    // To make this work on mobile (which doesn't have the data in its localStorage),
+    // we encode the customer details directly into the URL.
+    // Note: We exclude large base64 images to keep the QR code scan-friendly.
+    const compactData = {
+        i: customer.id,
+        n: customer.name,
+        c: customer.company,
+        m: customer.mobile,
+        e: customer.email,
+        a: customer.address,
+        nt: customer.notes
+    };
+    
+    // Only include the image if it's a URL (not a massive base64 string)
+    if (customer.image && !customer.image.startsWith('data:image')) {
+        compactData.img = customer.image;
+    }
+
+    const encodedData = btoa(unescape(encodeURIComponent(JSON.stringify(compactData))));
+    const profileUrl = `${currentUrl}/profile.html?data=${encodedData}`;
 
     qrcodeInstance = new QRCode(qrContainer, {
         text: profileUrl,
-        width: 200,
-        height: 200,
+        width: 240, // Slightly larger for more data
+        height: 240,
         colorDark : "#000000",
         colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        correctLevel : QRCode.CorrectLevel.M // Medium error correction to fit data
     });
 
     document.getElementById('qrProfileLink').href = profileUrl;
@@ -328,9 +350,33 @@ function importData(event) {
 // ----------------------------------------------------
 function loadProfileData() {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
+    const dataParam = params.get('data');
+    let customer = null;
 
-    const customer = customers.find(c => c.id === id);
+    // First, try to get data encoded in the URL (for mobile scanners)
+    if (dataParam) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(dataParam))));
+            customer = {
+                id: decoded.i,
+                name: decoded.n,
+                company: decoded.c,
+                mobile: decoded.m,
+                email: decoded.e,
+                address: decoded.a,
+                notes: decoded.nt,
+                image: decoded.img || `https://ui-avatars.com/api/?name=${encodeURIComponent(decoded.n)}&background=random&color=fff&size=200`
+            };
+        } catch (e) {
+            console.error("Failed to decode QR data:", e);
+        }
+    }
+
+    // If no URL data, fallback to searching localStorage (for admin preview)
+    if (!customer) {
+        const id = params.get('id');
+        customer = customers.find(c => c.id === id);
+    }
 
     if (customer) {
         document.getElementById('profileCard').style.display = 'block';
